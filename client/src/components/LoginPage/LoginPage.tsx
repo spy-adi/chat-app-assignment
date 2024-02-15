@@ -1,13 +1,14 @@
-// LoginPage.tsx
 import React, { useState } from 'react';
 import "./LoginPage.css";
 import io from "socket.io-client";
+import ChatPage from '../ChatPage/ChatPage';
 
 const socket = io("http://localhost:8080");
 
 const LoginPage: React.FC = () => {
   const [userName,setUserName] = useState<string>("");
   const [room,setRoom] = useState<string>("");
+  const [showChat, setShowChat] = useState<boolean>(false);
 
    // Function to handle form submission
    const handleSubmit = (e: React.FormEvent) => {
@@ -17,11 +18,16 @@ const LoginPage: React.FC = () => {
     console.log(room);
     if (userName !== "" && room !== "") {
       socket.emit("join_room", room);
+      setShowChat(true);
+    }else{
+      alert("Please provide a valid username or room name");
     }
   };
 
   return (
-    <div className="container">
+    <>
+    {!showChat?
+      (<div className="container">
       <h2 className='text-center'>Join/Create Room</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -54,7 +60,10 @@ const LoginPage: React.FC = () => {
           Join Room
         </button>
       </form>
-    </div>
+    </div>):(
+      <ChatPage socket={socket} username={userName} room={room} />
+    )}
+</>
   );
 };
 
