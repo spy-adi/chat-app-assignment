@@ -8,7 +8,7 @@ const app = (0, express_1.default)();
 app.get('/', (req, res) => {
     res.send('Hello');
 });
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

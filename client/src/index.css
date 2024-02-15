@@ -1,3 +1,15 @@
+body {
+  background: -webkit-linear-gradient(to right, #2c3e50, #bdc3c7);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #2c3e50, #bdc3c7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09819', endColorstr='#ff512f',GradientType=1 );
+	font-family: 'Lato', sans-serif;
+	font-style: normal;
+	font-weight: 400;
+	color: #282828;
+  display: flex;
+  justify-content: center;
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
