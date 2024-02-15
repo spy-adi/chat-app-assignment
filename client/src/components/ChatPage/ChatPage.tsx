@@ -1,19 +1,7 @@
 import React, { useEffect, useState, ChangeEvent, KeyboardEvent } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
-import { Socket } from "socket.io-client";
-
-interface Message {
-  room: string;
-  author: string;
-  message: string;
-  time: string;
-}
-
-interface ChatProps {
-  socket: Socket;
-  username: string;
-  room: string;
-}
+import "./ChatPage.css";
+import { Message, ChatProps } from "../../utility/utility";
 
 const ChatPage: React.FC<ChatProps> = ({ socket, username, room }) => {
   const [currentMessage, setCurrentMessage] = useState<string>("");
@@ -30,7 +18,7 @@ const ChatPage: React.FC<ChatProps> = ({ socket, username, room }) => {
         ).getMinutes()}`,
       };
 
-      await socket.emit("send_message", messageData);
+      socket.emit("send_message", messageData);
       setMessageList((list) => [...list, messageData]);
       setCurrentMessage("");
     }
@@ -62,7 +50,7 @@ const ChatPage: React.FC<ChatProps> = ({ socket, username, room }) => {
   return (
     <div className="chat-window">
       <div className="chat-header">
-        <p>Live Chat</p>
+        <p>{`Room: ${room}`}</p>
       </div>
       <div className="chat-body">
         <ScrollToBottom className="message-container">
@@ -73,12 +61,12 @@ const ChatPage: React.FC<ChatProps> = ({ socket, username, room }) => {
               key={index}
             >
               <div>
+              <p id="author">{messageContent.author}</p>
                 <div className="message-content">
                   <p>{messageContent.message}</p>
                 </div>
                 <div className="message-meta">
                   <p id="time">{messageContent.time}</p>
-                  <p id="author">{messageContent.author}</p>
                 </div>
               </div>
             </div>
