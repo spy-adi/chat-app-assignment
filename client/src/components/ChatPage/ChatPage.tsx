@@ -1,25 +1,99 @@
-// MessageArea.tsx
-import React from 'react';
+import React, { useEffect, useState, ChangeEvent, KeyboardEvent } from "react";
+import ScrollToBottom from "react-scroll-to-bottom";
+import { Socket } from "socket.io-client";
 
-const ChatPage: React.FC = () => {
+interface Message {
+  room: string;
+  author: string;
+  message: string;
+  time: string;
+}
+
+interface ChatProps {
+  socket: Socket;
+  username: string;
+  room: string;
+}
+
+const ChatPage: React.FC<ChatProps> = ({ socket, username, room }) => {
+  const [currentMessage, setCurrentMessage] = useState<string>("");
+  const [messageList, setMessageList] = useState<Message[]>([]);
+
+  const sendMessage = async () => {
+    if (currentMessage !== "") {
+      const messageData: Message = {
+        room,
+        author: username,
+        message: currentMessage,
+        time: `${new Date(Date.now()).getHours()}:${new Date(
+          Date.now()
+        ).getMinutes()}`,
+      };
+
+      await socket.emit("send_message", messageData);
+      setMessageList((list) => [...list, messageData]);
+      setCurrentMessage("");
+    }
+  };
+
+  useEffect(() => {
+    const receiveMessageHandler = (data: Message) => {
+      setMessageList((list) => [...list, data]);
+    };
+
+    socket.on("receive_message", receiveMessageHandler);
+
+    return () => {
+      // Cleanup on component unmount
+      socket.off("receive_message", receiveMessageHandler);
+    };
+  }, [socket]);
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setCurrentMessage(event.target.value);
+  };
+
+  const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+  };
+
   return (
-    <div className="row" id="message-area">
-      <div className="large-8 columns small-centered">
-        <h2>Socket.io Chat App</h2>
-        <div className="chat-wrap">
-          <div className="top">
-            <h5 className="room-title"></h5>
-          </div>
-          <div id="messages"></div>
-          <form id="message-form">
-            <div className="input-group">
-              <input type="text" placeholder="Type message here" className="input-group-field" name="message" />
-              <div className="input-group-button">
-                <input type="submit" value="Send" />
+    <div className="chat-window">
+      <div className="chat-header">
+        <p>Live Chat</p>
+      </div>
+      <div className="chat-body">
+        <ScrollToBottom className="message-container">
+          {messageList.map((messageContent, index) => (
+            <div
+              className="message"
+              id={username === messageContent.author ? "you" : "other"}
+              key={index}
+            >
+              <div>
+                <div className="message-content">
+                  <p>{messageContent.message}</p>
+                </div>
+                <div className="message-meta">
+                  <p id="time">{messageContent.time}</p>
+                  <p id="author">{messageContent.author}</p>
+                </div>
               </div>
             </div>
-          </form>
-        </div>
+          ))}
+        </ScrollToBottom>
+      </div>
+      <div className="chat-footer">
+        <input
+          type="text"
+          value={currentMessage}
+          placeholder="Hey..."
+          onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
+        />
+        <button onClick={sendMessage}>&#9658;</button>
       </div>
     </div>
   );

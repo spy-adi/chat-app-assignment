@@ -16,7 +16,7 @@ app.use(cors());
 // Create a Socket.IO server and pass the HTTP server as a parameter
 const io: SocketIOServer = new SocketIOServer(server, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:5173/",
     methods: ["GET", "POST"],
   },
 });

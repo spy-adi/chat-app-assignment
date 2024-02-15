@@ -1,35 +1,48 @@
-// appUtilities.ts
-import React from "react";
+import React, { useState } from "react";
 import io from "socket.io-client";
-import LoginPage from "./components/LoginPage/LoginPage";
-import { AppWrapperProps } from "./utility/utility";
+import ChatPage from "./components/ChatPage/ChatPage";
 
 const socket = io("http://localhost:8080");
 
+interface AppProps {}
 
-export const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
-  return <div className="App">{children}</div>;
-};
+const App: React.FC<AppProps> = () => {
+  const [username, setUsername] = useState<string>("");
+  const [room, setRoom] = useState<string>("");
+  const [showChat, setShowChat] = useState<boolean>(false);
 
-const App: React.FC = () => {
-  const [showChat, setShowChat] = React.useState(false);
-  const [username, setUsername] = React.useState("");
-  const [room, setRoom] = React.useState("");
-
-  const handleJoin = (enteredUsername: string, enteredRoom: string) => {
-    setUsername(enteredUsername);
-    setRoom(enteredRoom);
-    setShowChat(true);
+  const joinRoom = () => {
+    if (username !== "" && room !== "") {
+      socket.emit("join_room", room);
+      setShowChat(true);
+    }
   };
 
   return (
-    <AppWrapper>
+    <div className="App">
       {!showChat ? (
-        <LoginPage onJoin={handleJoin} />
+        <div className="joinChatContainer">
+          <h3>Join A Chat</h3>
+          <input
+            type="text"
+            placeholder="John..."
+            onChange={(event) => {
+              setUsername(event.target.value);
+            }}
+          />
+          <input
+            type="text"
+            placeholder="Room ID..."
+            onChange={(event) => {
+              setRoom(event.target.value);
+            }}
+          />
+          <button onClick={joinRoom}>Join A Room</button>
+        </div>
       ) : (
-        <></>
+        <ChatPage socket={socket} username={username} room={room} />
       )}
-    </AppWrapper>
+    </div>
   );
 };
 

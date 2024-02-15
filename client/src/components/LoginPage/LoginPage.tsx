@@ -1,9 +1,11 @@
 // LoginPage.tsx
 import React, { useState } from 'react';
 import "./LoginPage.css";
-import { JoinChatProps } from "../../utility/utility";
+import io from "socket.io-client";
 
-const LoginPage: React.FC<JoinChatProps> = ({onJoin}) => {
+const socket = io("http://localhost:8080");
+
+const LoginPage: React.FC = () => {
   const [userName,setUserName] = useState<string>("");
   const [room,setRoom] = useState<string>("");
 
@@ -14,7 +16,7 @@ const LoginPage: React.FC<JoinChatProps> = ({onJoin}) => {
     console.log(userName);
     console.log(room);
     if (userName !== "" && room !== "") {
-      onJoin(userName, room);
+      socket.emit("join_room", room);
     }
   };
 
