@@ -68,7 +68,7 @@ To run the application locally, follow these steps:
    npm start
    ```
 
-3. Open your browser and visit [http://localhost:3000](http://localhost:3000).
+3. Open your browser and visit [http://localhost:3000](http://localhost:5173).
 
 ## Contributing
 
