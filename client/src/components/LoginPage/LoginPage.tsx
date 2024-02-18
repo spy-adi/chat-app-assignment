@@ -17,7 +17,7 @@ const LoginPage: React.FC = () => {
     console.log(userName);
     console.log(room);
     if (userName !== "" && room !== "") {
-      socket.emit("join_room", room);
+      socket.emit("join_room",{ room, username:userName});
       setShowChat(true);
     }else{
       alert("Please provide a valid username or room name");

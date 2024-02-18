@@ -74,15 +74,18 @@ const ChatPage: React.FC<ChatProps> = ({ socket, username, room }) => {
         </ScrollToBottom>
       </div>
       <div className="chat-footer">
-        <input
-          type="text"
-          value={currentMessage}
-          placeholder="Hey..."
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
-        />
-        <button onClick={sendMessage}>&#9658;</button>
-      </div>
+      <input
+        type="text"
+        value={currentMessage}
+        placeholder="Hey..."
+        onChange={handleInputChange}
+        onKeyDown={handleKeyPress}
+      />
+      <button onClick={sendMessage} className="btn btn-primary d-flex align-items-center justify-content-center">
+        &#9658;
+      </button>
+    </div>
+
     </div>
   );
 };
