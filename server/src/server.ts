@@ -2,6 +2,7 @@
 import express, { Application, Request, Response } from "express";
 import http from "http";
 import cors from "cors";
+import path from "path";
 import { Server as SocketIOServer, Socket } from "socket.io";
 
 // Create an Express application

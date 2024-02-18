@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const http_1 = __importDefault(require("http"));
 const cors_1 = __importDefault(require("cors"));
+const path_1 = __importDefault(require("path"));
 const socket_io_1 = require("socket.io");
 // Create an Express application
 const app = (0, express_1.default)();
@@ -17,7 +18,7 @@ app.use((0, cors_1.default)());
 // Create a Socket.IO server and pass the HTTP server as a parameter
 const io = new socket_io_1.Server(server, {
     cors: {
-        origin: "*",
+        origin: "http://localhost:5173/",
         methods: ["GET", "POST"],
     },
 });
@@ -37,6 +38,12 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log("User Disconnected", socket.id);
     });
+});
+// Serve static files
+app.use(express_1.default.static(path_1.default.join(__dirname, 'dist')));
+// Catch-all route to serve index.html
+app.get('/*', (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, 'dist', 'index.html'));
 });
 // Start the server on port 8080
 const PORT = process.env.PORT || 8080;
