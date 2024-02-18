@@ -3,7 +3,7 @@ import "./LoginPage.css";
 import io from "socket.io-client";
 import ChatPage from '../ChatPage/ChatPage';
 
-const socket = io("http://localhost:8080");
+const socket = io("https://chat-app-assignment-oe8k.onrender.com/");
 
 const LoginPage: React.FC = () => {
   const [userName,setUserName] = useState<string>("");
